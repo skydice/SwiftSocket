@@ -147,6 +147,9 @@ int ytcpsocket_send(int socketfd, const char *data, int len){
     while (len - byteswrite > 0) {
         int writelen = (int)write(socketfd, data + byteswrite, len - byteswrite);
         if (writelen < 0) {
+            if (errno == EINTR || errno == EAGAIN) {
+                continue;
+            }
             return -1;
         }
         byteswrite += writelen;
